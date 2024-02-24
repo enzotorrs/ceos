@@ -1,36 +1,22 @@
 <template>
   <div class="grid_background">
     <div class="grid">
-      <AssetComponent
-        v-for="asset in assets"
-        :key="asset.id"
-        :asset="asset"
-      />
+      <AssetComponent v-for="asset in assets" :key="asset.id" :asset="asset" />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import axios from "axios";
-import { Asset } from "../Asset";
 import AssetComponent from "./Asset.vue";
-export default defineComponent({
-    name: "GridAsset",
-    components: {
-        AssetComponent
-    },
-    data() {
-        return {
-            assets: [] as Asset[]
-        };
-    },
+import { ref, onMounted } from "vue";
+const assets = ref([]);
 
-    mounted() {
-        axios
-            .get("http://localhost:8000/assets")
-            .then(response => this.assets = response.data);
-    }
+onMounted(() => {
+  axios
+    .get("http://localhost:8000/assets")
+    .then(response => assets.value = response.data);
+
 });
 
 </script>
