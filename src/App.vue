@@ -3,7 +3,7 @@
     <v-main id="main">
       <SideMenu />
       <Header />
-      <GridAssets />
+      <AssetsGrid />
     </v-main>
   </v-app>
 </template>
