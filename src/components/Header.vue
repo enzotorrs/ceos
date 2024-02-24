@@ -1,15 +1,26 @@
 <template>
   <header>
-    <input class="asset-search" type="text" placeholder="Search for asset">
+    <input
+      class="asset-search"
+      type="text"
+      placeholder="Search for asset"
+    >
     <div class="header__icons">
-      <v-icon :icon="mdiBell" color="white" />
-      <img class="user-icon" src="@/assets/gojo_icon.png" alt="User perfil icon">
+      <v-icon
+        :icon="mdiBell"
+        color="white"
+      />
+      <img
+        class="user-icon"
+        src="@/assets/gojo_icon.png"
+        alt="User perfil icon"
+      >
     </div>
   </header>
 </template>
 
 <script  lang="ts" setup>
-import { mdiBell } from '@mdi/js'
+import { mdiBell } from "@mdi/js";
 </script>
 
 <style>

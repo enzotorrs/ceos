@@ -1,39 +1,57 @@
 <template>
   <aside class="side-menu">
     <div class="logo-wrapper">
-      <img src="@/assets/planet_logo.png" alt="ceos logo planet">
-      <img src="@/assets/text_logo.svg" alt="ceos logo text">
+      <img
+        src="@/assets/planet_logo.png"
+        alt="ceos logo planet"
+      >
+      <img
+        src="@/assets/text_logo.svg"
+        alt="ceos logo text"
+      >
     </div>
     <navbar>
       <ul>
-        <li v-for="(item, index) in items" class="navbar__item" :key="index"
-          :class="{ navbar__item_active: activeIndex === index }" @click="setActiveIndex(index)">
-          {{ item }} </li>
+        <li
+          v-for="(item, index) in items"
+          :key="index"
+          class="navbar__item"
+          :class="{ navbar__item_active: activeIndex === index }"
+          @click="setActiveIndex(index)"
+        >
+          {{ item }}
+        </li>
       </ul>
-      <hr class="separator" >
+      <hr class="separator">
       <ul>
-        <li class="navbar__item" :class="{ navbar__item_active: activeIndex === 4 }" @click="setActiveIndex(4)">History</li>
+        <li
+          class="navbar__item"
+          :class="{ navbar__item_active: activeIndex === 4 }"
+          @click="setActiveIndex(4)"
+        >
+          History
+        </li>
       </ul>
     </navbar>
   </aside>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue";
 export default defineComponent({
-  name: 'SideMenu',
-  data () {
-    return {
-      activeIndex: 0,
-      items: ['Home', 'Videos', 'Photos']
+    name: "SideMenu",
+    data () {
+        return {
+            activeIndex: 0,
+            items: ["Home", "Videos", "Photos"]
+        };
+    },
+    methods: {
+        setActiveIndex (index: number) {
+            this.activeIndex = index;
+        }
     }
-  },
-  methods: {
-    setActiveIndex (index: number) {
-      this.activeIndex = index
-    }
-  }
-})
+});
 
 </script>
 
