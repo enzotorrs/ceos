@@ -1,24 +1,20 @@
 <template>
   <div class="grid_background">
     <div class="grid">
-      <AssetComponent v-for="asset in assets" :key="asset.id" :asset="asset" />
+      <AssetComponent v-for="asset in assetsStore.assets" :key="asset.id" :asset="asset" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import axios from "axios";
+import { useAssets } from "@/stores/assets";
+const assetsStore = useAssets();
 import AssetComponent from "./Asset.vue";
-import { ref, onMounted } from "vue";
-const assets = ref([]);
+import { onMounted } from "vue";
 
 onMounted(() => {
-  axios
-    .get("http://localhost:8000/assets")
-    .then(response => assets.value = response.data);
-
+  assetsStore.loadAssets();
 });
-
 </script>
 
 <style>
