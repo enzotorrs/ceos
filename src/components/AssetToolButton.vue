@@ -4,24 +4,13 @@
       :icon="mdiDotsVertical"
       color="grey"
     />
-    <v-menu activator="parent">
-      <v-list>
-        <v-list-item
-          value="delete"
-          title="Delete"
-          @click="deleteAsset"
-        >
-        </v-list-item>
-      </v-list>
-    </v-menu>
+    <AssetActionMenu :asset="asset" />
   </button>
 </template>
 
 <script  lang="ts" setup>
 import { Asset } from "@/Asset";
 import { PropType } from "vue";
-import { useAssets } from "@/stores/assets";
-const assetsStore = useAssets();
 import { mdiDotsVertical } from "@mdi/js";
 const props = defineProps({
     asset: {
@@ -33,11 +22,6 @@ const props = defineProps({
         required: true
     }
 });
-const emit = defineEmits(["deleteAsset"]);
-function deleteAsset() {
-    assetsStore.deleteAsset(props.asset.id);
-    emit("deleteAsset");
-}
 </script>
 <style scoped>
 .asset__tool_button {
