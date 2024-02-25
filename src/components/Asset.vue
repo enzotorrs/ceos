@@ -1,45 +1,23 @@
 <template>
-  <div
-    v-if="!deleted"
-    class="asset"
-    :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled }"
-    @mouseover="hover = true"
-    @mouseleave="hover = false"
-  >
+  <div v-if="!deleted" class="asset" :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled }"
+    @mouseover="hover = true" @mouseleave="hover = false">
     <div class="asset__footer">
       <div class="asset__metadata_wrapper">
         <p class="asset__name">
-          {{ asset?.name }}
+          {{ asset.name }}
         </p>
-        <p
-          v-if="asset.folder"
-          class="asset__count_child"
-        >
+        <p v-if="asset.folder" class="asset__count_child">
           {{ asset.child_assets.length }} items
         </p>
-        <p
-          v-if="!asset.folder"
-          class="asset__count_child"
-        >
+        <p v-if="!asset.folder" class="asset__count_child">
           {{ created_date }}
         </p>
       </div>
-      <button
-        :class="{ disabled: !hover }"
-        class="asset__tool_button"
-      >
-        <v-icon
-          :icon="mdiDotsVertical"
-          color="grey"
-        />
+      <button :class="{ disabled: !hover }" class="asset__tool_button">
+        <v-icon :icon="mdiDotsVertical" color="grey" />
         <v-menu activator="parent">
           <v-list>
-            <v-list-item
-              v-for="(option, index) in options"
-              :key="index"
-              :value="index"
-              @click="option.action"
-            >
+            <v-list-item v-for="(option, index) in options" :key="index" :value="index" @click="option.action">
               <v-list-item-title>{{ option.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -52,7 +30,7 @@
 <script lang="ts" setup>
 import { Asset } from "@/Asset";
 import { PropType } from "vue";
-import axios from "axios";
+import { useAssets } from "@/stores/assets";
 import { mdiDotsVertical } from "@mdi/js";
 import { ref } from "vue";
 
@@ -61,24 +39,22 @@ const deleted = ref(false);
 const disabled = ref(false);
 
 const options = [{ title: "Delete", id: 0, action: deleteAsset }];
+const assetsStore = useAssets();
 
 const props = defineProps({
-    asset: {
-        type: Object as PropType<Asset>,
-        required: true
-    }
+  asset: {
+    type: Object as PropType<Asset>,
+    required: true
+  }
 });
 
 const created_date = new Date(props.asset.created_at).toDateString();
 function deleteAsset() {
-    axios
-        .delete(`http://localhost:8000/assets/${props.asset?.id}`)
-        .then(response => console.log(response.data));
-
-    disabled.value = true;
-    setTimeout(() => {
-        deleted.value = true;
-    }, 400);
+  assetsStore.deleteAsset(props.asset.id);
+  disabled.value = true;
+  setTimeout(() => {
+    deleted.value = true;
+  }, 400);
 }
 </script>
 
