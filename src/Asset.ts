@@ -1,5 +1,5 @@
 /* eslint-disable */
-export type Asset = {
+export interface Asset  {
   name: string
   parent_asset_id: number
   folder: boolean
