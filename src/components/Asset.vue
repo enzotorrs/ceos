@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="!deleted"
     class="asset"
     :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled }"
     @mouseover="hover = true"
@@ -36,11 +35,8 @@
 import { Asset } from "@/Asset";
 import { PropType } from "vue";
 import { ref } from "vue";
-
-const hover = ref(false);
-const deleted = ref(false);
-const disabled = ref(false);
-
+import { useAssets } from "@/stores/assets";
+const assetsStore = useAssets();
 
 const props = defineProps({
     asset: {
@@ -49,13 +45,25 @@ const props = defineProps({
     }
 });
 
+const hover = ref(false);
+const disabled = ref(false);
 const created_date = new Date(props.asset.created_at).toDateString();
-function deleteAsset() {
-    disabled.value = true;
-    setTimeout(() => {
-        deleted.value = true;
-    }, 400);
+
+assetsStore.$onAction(({
+    name,
+    args,
+    after
+}) => {
+    after(() => {
+        if (name === "deleteAsset" && args[0] == props.asset.id) {
+            disabled.value = true;
+            setTimeout(() => {
+                assetsStore.assets = assetsStore.assets.filter((asset: Asset) => asset.id !== args[0]);
+            }, 400);
+        }
+    });
 }
+);
 </script>
 
 <style>
