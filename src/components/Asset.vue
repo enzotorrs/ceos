@@ -26,7 +26,7 @@
       </div>
       <AssetToolButton
         :asset="asset"
-        @delete-asset="deleteAsset"
+        :hover="hover"
       />
     </div>
   </div>

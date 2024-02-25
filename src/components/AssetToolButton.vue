@@ -1,5 +1,5 @@
 <template>
-  <button class="asset__tool_button">
+  <button :class="{disabled: !hover}" class="asset__tool_button">
     <v-icon
       :icon="mdiDotsVertical"
       color="grey"
@@ -26,6 +26,10 @@ import { mdiDotsVertical } from "@mdi/js";
 const props = defineProps({
     asset: {
         type: Object as PropType<Asset>,
+        required: true
+    },
+    hover: {
+        type: Boolean,
         required: true
     }
 });
