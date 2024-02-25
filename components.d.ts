@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Asset: typeof import('./src/components/Asset.vue')['default']
     AssetsGrid: typeof import('./src/components/AssetsGrid.vue')['default']
+    AssetToolButton: typeof import('./src/components/AssetToolButton.vue')['default']
     GridAssets: typeof import('./src/components/GridAssets.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
