@@ -1,9 +1,8 @@
 <template>
-  <v-dialog :activator="activator" width="auto">
+  <v-dialog :activator="activator" width="auto" @update:model-value="focus">
     <template #default="{ isActive }">
       <v-card class="asset__rename_dialog" title="Rename asset">
-        <v-text-field ref="input" v-model="inputValue" :autofocus="true" class="rename_dialog__input"
-          @update:focused="selectTextOfInput"
+        <v-text-field ref="input" v-model="inputValue" class="rename_dialog__input"
           @keyup.enter.prevent="$emit('renameAsset', inputValue); isActive.value = false" />
         <div class="rename_dialog__button_wrapper">
           <v-btn variant="tonal" class="rename_dialog__btn" color="green"
@@ -31,14 +30,18 @@ const props = defineProps({
     type: Object as PropType<Element> | undefined
   }
 });
+
+function focus(active: boolean) {
+  if (active) {
+    setTimeout(() => {
+      input.value.select();
+    }, 300);
+  }
+}
+
 const emit = defineEmits(["renameAsset"]);
 const inputValue = ref(props.asset.name);
 const input = ref();
-function selectTextOfInput(focus: any) {
-  if (focus) {
-    input.value.select();
-  }
-}
 </script>
 <style scoped>
 .asset__rename_dialog {
