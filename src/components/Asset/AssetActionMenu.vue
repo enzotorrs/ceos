@@ -3,22 +3,7 @@
     <v-list>
       <v-list-item value="delete" title="Delete" @click="deleteAsset" />
       <v-list-item value="rename" title="Rename">
-        <v-dialog activator="parent" width="auto">
-          <template #default="{ isActive }">
-            <v-card class="asset__rename_dialog" title="Rename asset">
-              <v-text-field v-model="inputValue" class="rename_dialog__input" @keyup.enter.prevent="renameAsset" />
-              <div class="rename_dialog__button_wrapper">
-                <v-btn variant="tonal" class="rename_dialog__btn" color="green"
-                  @click="() => { renameAsset(); isActive.value = false }">
-                  OK
-                </v-btn>
-                <v-btn variant="tonal" class="rename_dialog__btn" color="red" @click="isActive.value = false">
-                  cancel
-                </v-btn>
-              </div>
-            </v-card>
-          </template>
-        </v-dialog>
+        <AssetRenameDialog :asset="asset" @rename-asset="renameAsset" />
       </v-list-item>
     </v-list>
   </v-menu>
@@ -37,13 +22,12 @@ const props = defineProps({
     required: true
   }
 });
-const inputValue = ref(props.asset.name);
 const menu = ref(false);
 function deleteAsset() {
   assetsStore.deleteAsset(props.asset.id);
 }
-function renameAsset() {
-  assetsStore.renameAsset(props.asset.id, inputValue.value);
+function renameAsset(newName: string) {
+  assetsStore.renameAsset(props.asset.id, newName);
   menu.value = false;
 }
 </script>
