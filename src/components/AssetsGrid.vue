@@ -1,7 +1,7 @@
 <template>
   <div class="grid_background">
     <div class="grid">
-      <AssetComponent v-for="asset in assetsStore.assets" :key="asset.id" :asset="asset" />
+      <Asset v-for="asset in assetsStore.assets" :key="asset.id" :asset="asset" />
     </div>
   </div>
 </template>
@@ -9,7 +9,6 @@
 <script setup lang="ts">
 import { useAssets } from "@/stores/assets";
 const assetsStore = useAssets();
-import AssetComponent from "./Asset.vue";
 import { onMounted } from "vue";
 
 onMounted(() => {
