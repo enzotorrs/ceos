@@ -1,8 +1,8 @@
 <template>
   <v-menu v-model="menu" activator="parent">
     <v-list>
-      <v-list-item value="delete" title="Delete" @click="deleteAsset" />
-      <v-list-item value="rename" title="Rename">
+      <v-list-item :append-icon="mdiDelete" value="delete" title="Delete" @click="deleteAsset" />
+      <v-list-item :append-icon="mdiPencil" value="rename" title="Rename">
         <AssetRenameDialog :asset="asset" @rename-asset="renameAsset" />
       </v-list-item>
     </v-list>
@@ -14,6 +14,7 @@ import { Asset } from "@/Asset";
 import { PropType } from "vue";
 import { useAssets } from "@/stores/assets";
 import { ref } from "vue";
+import { mdiDelete, mdiPencil } from '@mdi/js';
 
 const assetsStore = useAssets();
 const props = defineProps({
