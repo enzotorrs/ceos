@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Asset: typeof import('./src/components/Asset/Asset.vue')['default']
     AssetActionMenu: typeof import('./src/components/Asset/AssetActionMenu.vue')['default']
+    AssetRenameDialog: typeof import('./src/components/Asset/AssetRenameDialog.vue')['default']
     AssetsGrid: typeof import('./src/components/AssetsGrid.vue')['default']
     AssetToolButton: typeof import('./src/components/Asset/AssetToolButton.vue')['default']
     GridAssets: typeof import('./src/components/GridAssets.vue')['default']
