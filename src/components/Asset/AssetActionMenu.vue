@@ -31,28 +31,3 @@ function renameAsset(newName: string) {
   menu.value = false;
 }
 </script>
-
-<style>
-.asset__rename_dialog {
-  width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.rename_dialog__button_wrapper {
-  display: flex;
-  justify-content: space-evenly;
-  width: 100%;
-  padding-bottom: 15px;
-
-}
-
-.rename_dialog__btn {
-  width: 100px;
-}
-
-.rename_dialog__input {
-  width: 100%;
-}
-</style>
