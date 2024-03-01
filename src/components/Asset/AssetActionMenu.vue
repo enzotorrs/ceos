@@ -2,11 +2,10 @@
   <v-menu v-model="menu" activator="parent">
     <v-list>
       <v-list-item :append-icon="mdiDelete" value="delete" title="Delete" @click="deleteAsset" />
-      <v-list-item :append-icon="mdiPencil" value="rename" title="Rename">
-        <AssetRenameDialog :asset="asset" @rename-asset="renameAsset" />
-      </v-list-item>
+      <v-list-item ref="dialogActivator" :append-icon="mdiPencil" value="rename" title="Rename" @click="closeMenu" />
     </v-list>
   </v-menu>
+  <AssetRenameDialog :activator="dialogActivator" :asset="asset" @rename-asset="renameAsset" />
 </template>
 
 <script setup lang="ts">
@@ -14,7 +13,7 @@ import { Asset } from "@/Asset";
 import { PropType } from "vue";
 import { useAssets } from "@/stores/assets";
 import { ref } from "vue";
-import { mdiDelete, mdiPencil } from '@mdi/js';
+import { mdiDelete, mdiPencil } from "@mdi/js";
 
 const assetsStore = useAssets();
 const props = defineProps({
@@ -24,6 +23,10 @@ const props = defineProps({
   }
 });
 const menu = ref(false);
+const dialogActivator = ref();
+function closeMenu() {
+  menu.value = false;
+}
 function deleteAsset() {
   assetsStore.deleteAsset(props.asset.id);
 }

@@ -1,12 +1,13 @@
 <template>
-  <v-dialog activator="parent" width="auto">
+  <v-dialog :activator="activator" width="auto">
     <template #default="{ isActive }">
       <v-card class="asset__rename_dialog" title="Rename asset">
-        <v-text-field v-model="inputValue" class="rename_dialog__input"
-          @keyup.enter.prevent="$emit('renameAsset', inputValue)" />
+        <v-text-field ref="input" v-model="inputValue" :autofocus="true" class="rename_dialog__input"
+          @update:focused="selectTextOfInput"
+          @keyup.enter.prevent="$emit('renameAsset', inputValue); isActive.value = false" />
         <div class="rename_dialog__button_wrapper">
           <v-btn variant="tonal" class="rename_dialog__btn" color="green"
-            @click="() => { $emit('renameAsset', inputValue); isActive.value = false }">
+            @click="$emit('renameAsset', inputValue); isActive.value = false">
             OK
           </v-btn>
           <v-btn variant="tonal" class="rename_dialog__btn" color="red" @click="isActive.value = false">
@@ -20,15 +21,24 @@
 
 <script setup lang="ts">
 import { Asset } from "@/Asset";
-import { ref, PropType } from "vue";
+import { ref, PropType, } from "vue";
 const props = defineProps({
   asset: {
     type: Object as PropType<Asset>,
     required: true
+  },
+  activator: {
+    type: Object as PropType<Element> | undefined
   }
 });
 const emit = defineEmits(["renameAsset"]);
 const inputValue = ref(props.asset.name);
+const input = ref();
+function selectTextOfInput(focus: any) {
+  if (focus) {
+    input.value.select();
+  }
+}
 </script>
 <style scoped>
 .asset__rename_dialog {
