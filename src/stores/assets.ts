@@ -16,9 +16,7 @@ export const useAssets = defineStore("assets", {
       await axios.delete(`http://localhost:8000/assets/${id}`);
     },
     renameAsset(id: number, newName: string) {
-      const asset = this.assets.find(asset => asset.id === id);
-      asset.name = newName;
-      axios.put(`http://localhost:8000/assets/${id}`, asset).then(response => {
+      axios.patch(`http://localhost:8000/assets/${id}`, {name: newName}).then(response => {
         const index = this.assets.findIndex(asset => asset.id === id);
         this.assets[index] = response.data;
       });
