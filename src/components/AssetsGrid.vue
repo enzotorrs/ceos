@@ -1,5 +1,6 @@
 <template>
   <div class="grid_background">
+    <UtilsBar />
     <div class="grid">
       <Asset v-for="asset in assetsStore.assets" :key="asset.id" :asset="asset" />
     </div>
@@ -8,6 +9,7 @@
 
 <script setup lang="ts">
 import { useAssets } from "@/stores/assets";
+import { ref, PropType, } from "vue";
 const assetsStore = useAssets();
 import { onMounted } from "vue";
 

@@ -14,7 +14,7 @@
           v-if="asset.folder"
           class="asset__count_child"
         >
-          {{ asset.child_assets.length }} items
+          {{ asset.childAssets.length }} items
         </p>
         <p
           v-if="!asset.folder"
@@ -47,7 +47,7 @@ const props = defineProps({
 
 const hover = ref(false);
 const disabled = ref(false);
-const created_date = new Date(props.asset.created_at).toDateString();
+const created_date = new Date(props.asset.createdAt).toDateString();
 
 assetsStore.$onAction(({
     name,
