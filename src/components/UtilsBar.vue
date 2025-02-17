@@ -43,7 +43,7 @@ async function uploadFile() {
   const asset = { name: fileInput.value.files[0].name, folder: false }
   const newAsset = await assetsStore.createAsset(asset)
 
-  axios.postForm(`http://localhost:3000/asset/upload/${newAsset.uploadId}`, { file: fileInput.value.files[0] })
+  axios.postForm(`${import.meta.env.VITE_API_URL}/asset/upload/${newAsset.uploadId}`, { file: fileInput.value.files[0] })
   dialog.value = false
   fileInput.value.reset()
 }
