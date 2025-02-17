@@ -1,4 +1,5 @@
 <template>
+  <router-link :to="`/asset/${asset.id}`" >
   <div
     class="asset"
     :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled }"
@@ -29,6 +30,7 @@
       />
     </div>
   </div>
+  </router-link>
 </template>
 
 <script lang="ts" setup>
