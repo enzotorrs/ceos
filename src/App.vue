@@ -18,6 +18,10 @@
   --primary-contrast-color: #20222B;
 }
 
+a {
+  text-decoration: none;
+}
+
 * {
   margin: 0;
   outline: none;
