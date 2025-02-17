@@ -1,10 +1,13 @@
 <template>
   <header>
-    <input
-      class="asset-search"
-      type="text"
-      placeholder="Search for asset"
-    >
+    <div class="header-left">
+      <Logo/>
+      <input
+        class="asset-search"
+        type="text"
+        placeholder="Search for asset"
+      >
+    </div>
     <div class="header__icons">
       <v-icon
         :icon="mdiBell"
@@ -23,7 +26,7 @@
 import { mdiBell } from "@mdi/js";
 </script>
 
-<style>
+<style scoped>
 header {
   height: 72px;
   background-color: var(--secondary-bg-color);
@@ -33,6 +36,12 @@ header {
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 
 .asset-search {
