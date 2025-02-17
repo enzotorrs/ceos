@@ -68,7 +68,7 @@ assetsStore.$onAction(({
 );
 </script>
 
-<style>
+<style scoped>
 .folder {
   background-image: url("@/assets/folder.svg");
   background-size: contain;

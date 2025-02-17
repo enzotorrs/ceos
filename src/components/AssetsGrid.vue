@@ -18,7 +18,7 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .grid_background {
   background-color: var(--secondary-bg-color);
 }

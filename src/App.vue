@@ -38,13 +38,4 @@ ul {
   -moz-osx-font-smoothing: grayscale;
 }
 
-#main {
-  display: grid;
-  grid-template-areas:
-    "aside header"
-    "aside main";
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto 1fr;
-  min-height: 100vh;
-}
 </style>
