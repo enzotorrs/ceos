@@ -1,15 +1,12 @@
 <template>
   <v-app>
     <v-main id="main">
-      <SideMenu />
-      <Header />
-      <AssetsGrid />
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
-//
 </script>
 
 <style>
@@ -36,6 +33,7 @@ ul {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 #main {
   display: grid;
   grid-template-areas:
@@ -44,17 +42,5 @@ ul {
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
   min-height: 100vh;
-}
-
-GridAssets {
-  grid-area: main;
-}
-
-Header {
-  grid-area: header
-}
-
-SideMenu {
-  grid-area: aside;
 }
 </style>
