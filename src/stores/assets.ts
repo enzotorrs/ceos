@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import { apiClient } from '@/services/ApiClient'
 import { Asset } from "@/Asset";
 
 export const useAssets = defineStore("assets", {
@@ -8,22 +8,21 @@ export const useAssets = defineStore("assets", {
   }),
   actions: {
     loadAssets() {
-      console.log(import.meta.env.VITE_API_URL)
-      axios
-        .get(`${import.meta.env.VITE_API_URL}/asset`)
+      apiClient
+        .get('/asset')
         .then(response => this.assets = response.data);
     },
     async deleteAsset(id: number) {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/asset/${id}`);
+      await apiClient.delete(`/asset/${id}`);
     },
     renameAsset(id: number, newName: string) {
-      axios.patch(`${import.meta.env.VITE_API_URL}/asset/${id}`, {name: newName}).then(response => {
+      apiClient.patch(`/asset/${id}`, { name: newName }).then(response => {
         const index = this.assets.findIndex(asset => asset.id === id);
         this.assets[index] = response.data;
       });
     },
-    async createAsset(asset: Asset){
-      const newAsset = await axios.post(`${import.meta.env.VITE_API_URL}/asset/`, asset)
+    async createAsset(asset: Asset) {
+      const newAsset = await apiClient.post('/asset', asset)
       this.loadAssets()
       return newAsset.data
     },
