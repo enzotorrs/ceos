@@ -4,13 +4,23 @@ import { Asset } from "@/Asset";
 
 export const useAssets = defineStore("assets", {
   state: () => ({
-    assets: [] as Asset[]
+    assets: [] as Asset[],
+    page: 1,
+    pageSize: 10,
+    totalItems: 10,
+    totalPages: 10
   }),
   actions: {
-    loadAssets() {
-      apiClient
-        .get('/asset')
-        .then(response => this.assets = response.data);
+    async loadAssets() {
+      const params = {
+        page: this.page,
+        pageSize:this.pageSize
+      }
+
+      const response = await apiClient.get('/asset', {params} )
+      this.assets = response.data.assets
+      this.totalItems = response.data.totalItems
+      this.totalPages = response.data.totalPages
     },
     async deleteAsset(id: number) {
       await apiClient.delete(`/asset/${id}`);
