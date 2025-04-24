@@ -1,5 +1,9 @@
 <template>
   <div class="utils-bar">
+    <div class="asset-pagination">
+      <v-pagination v-model="assetsStore.page" :length="assetsStore.totalPages"></v-pagination>
+      <v-select class="page-size-picker" label="page size" v-model="assetsStore.pageSize" :items="[10, 20, 50, 100]"></v-select>
+    </div>
     <div class="asset-actions">
       <v-btn ref="btnUploadFile" @click="openDialog" :icon="mdiFileUpload" variant="text">
       </v-btn>
@@ -16,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { mdiFileUpload } from "@mdi/js"
 import { useAssets } from "@/stores/assets";
 import axios from "axios";
@@ -30,8 +34,12 @@ const validInput = ref(false)
 function openDialog() {
   dialog.value = true
 }
+watch([()=>assetsStore.pageSize, ()=> assetsStore.page], () => {
+  assetsStore.loadAssets()
+}
+)
 function onFileInputChange(files) {
-  if(!files){
+  if (!files) {
     validInput.value = false
     return
   }
@@ -52,8 +60,16 @@ async function uploadFile() {
 <style scoped>
 .utils-bar {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   padding: 16px 16px 0 16px
+}
+
+.asset-pagination {
+  display: flex;
+}
+
+.page-size-picker {
+  width: 100px;
 }
 
 .upload_file_dialog {
