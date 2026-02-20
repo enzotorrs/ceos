@@ -38,20 +38,24 @@ watch([()=>assetsStore.pageSize, ()=> assetsStore.page], () => {
   assetsStore.loadAssets()
 }
 )
-function onFileInputChange(files) {
-  if (!files) {
+function onFileInputChange(file) {
+  if (!file) {
     validInput.value = false
     return
   }
-  validInput.value = files.length > 0
+  validInput.value = file.size > 0 && file.type === "video/mp4"
 }
 
 
 async function uploadFile() {
-  const asset = { name: fileInput.value.files[0].name, folder: false }
+  const file = fileInput.value.files[0]
+  const asset = { name: file.name, folder: false, filename: file.name }
   const newAsset = await assetsStore.createAsset(asset)
 
-  axios.postForm(`${import.meta.env.VITE_API_URL}/asset/upload/${newAsset.uploadId}`, { file: fileInput.value.files[0] })
+  await axios.put(newAsset.data.uploadUrl, file, {
+    headers: { 'Content-Type': file.type },
+  })
+
   dialog.value = false
   fileInput.value.reset()
 }
