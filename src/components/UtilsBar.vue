@@ -56,7 +56,8 @@ function openDialog() {
 
 async function createFolder() {
   if (!folderName.value.trim()) return
-  await assetsStore.createAsset({ name: folderName.value.trim(), folder: true } as any)
+  const curentFolder = assetsStore.currentFolderId
+  await assetsStore.createAsset({ name: folderName.value.trim(), folder: true, parentAssetId: curentFolder } as any)
   folderName.value = ''
   folderDialog.value = false
 }
