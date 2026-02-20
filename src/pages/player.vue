@@ -9,7 +9,7 @@
           color="white"
           @click="router.back()"
         />
-        <span class="filename">{{ id }}</span>
+        <span class="filename">{{ assetName }}</span>
       </div>
 
       <div class="player-wrapper">
@@ -41,6 +41,7 @@ const route = useRoute()
 const router = useRouter()
 
 const id = route.query.id as string
+const assetName = ref('')
 const mediaUrl = ref('')
 const loading = ref(true)
 const error = ref('')
@@ -48,6 +49,7 @@ const error = ref('')
 onMounted(async () => {
   try {
     const asset = await apiClient.get(`/asset/${id}`)
+    assetName.value = asset.data.data.name
     const filename = asset.data.data.filename
     const response = await apiClient.get(`/media/${filename}`)
     mediaUrl.value = response.data.data
