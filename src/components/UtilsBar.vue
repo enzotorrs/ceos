@@ -5,6 +5,22 @@
       <v-select class="page-size-picker" variant="outlined" label="page size" :totalVisible="0" v-model="assetsStore.pageSize" :items="[10, 20, 50, 100]"></v-select>
     </div>
     <div class="asset-actions">
+      <v-btn ref="btnCreateFolder" @click="folderDialog = true" :icon="mdiFolderPlus" variant="text" />
+      <v-dialog v-model="folderDialog" width="auto">
+        <v-card class="upload_file_dialog" title="New Folder">
+          <v-text-field
+            v-model="folderName"
+            label="Folder name"
+            variant="outlined"
+            density="comfortable"
+            class="upload_file_input"
+            @keyup.enter="createFolder"
+          />
+          <v-btn :disabled="!folderName.trim()" @click="createFolder" variant="tonal" color="green">Create</v-btn>
+        </v-card>
+      </v-dialog>
+      <v-tooltip :activator="btnCreateFolder" location="bottom">New Folder</v-tooltip>
+
       <v-btn ref="btnUploadFile" @click="openDialog" :icon="mdiFileUpload" variant="text">
       </v-btn>
       <v-dialog v-model="dialog" width="auto">
@@ -21,7 +37,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { mdiFileUpload } from "@mdi/js"
+import { mdiFileUpload, mdiFolderPlus } from "@mdi/js"
 import { useAssets } from "@/stores/assets";
 import axios from "axios";
 
@@ -30,9 +46,19 @@ const dialog = ref(false)
 const btnUploadFile = ref()
 const fileInput = ref(null);
 const validInput = ref(false)
+const folderDialog = ref(false)
+const folderName = ref('')
+const btnCreateFolder = ref()
 
 function openDialog() {
   dialog.value = true
+}
+
+async function createFolder() {
+  if (!folderName.value.trim()) return
+  await assetsStore.createAsset({ name: folderName.value.trim(), folder: true } as any)
+  folderName.value = ''
+  folderDialog.value = false
 }
 watch([()=>assetsStore.pageSize, ()=> assetsStore.page], () => {
   assetsStore.loadAssets()
