@@ -1,5 +1,5 @@
 <template>
-  <button :class="{hidden: !hover}" class="asset__tool_button">
+  <button :class="{hidden: !hover}" class="asset__tool_button" @click.stop>
     <v-icon
       :icon="mdiDotsVertical"
       color="grey"

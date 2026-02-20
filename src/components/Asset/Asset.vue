@@ -1,6 +1,7 @@
 <template>
-    <div class="asset" :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled }"
-      @mouseover="hover = true" @mouseleave="hover = false">
+    <div class="asset" :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled, clickable: asset.folder }"
+      @mouseover="hover = true" @mouseleave="hover = false"
+      @click="asset.folder && assetsStore.navigateTo(asset)">
       <div class="asset__footer">
         <div class="asset__metadata_wrapper">
           <p class="asset__name">
@@ -111,5 +112,9 @@ assetsStore.$onAction(({
 .disabled {
   visibility: hidden;
   opacity: 0;
+}
+
+.clickable {
+  cursor: pointer;
 }
 </style>
