@@ -19,6 +19,7 @@
             v-model="username"
             label="username"
             type="text"
+            autocomplete="username"
             variant="outlined"
             density="comfortable"
             class="mb-3"
