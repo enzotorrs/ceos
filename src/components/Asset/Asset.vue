@@ -1,7 +1,7 @@
 <template>
-    <div class="asset" :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled, clickable: asset.folder }"
+    <div class="asset" :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled, clickable: true }"
       @mouseover="hover = true" @mouseleave="hover = false"
-      @click="asset.folder && assetsStore.navigateTo(asset)">
+      @click="asset.folder ? assetsStore.navigateTo(asset) : router.push({ path: '/player', query: { id: asset.id } })">
       <div class="asset__footer">
         <div class="asset__metadata_wrapper">
           <p class="asset__name">
@@ -24,7 +24,9 @@ import { Asset } from "@/Asset";
 import { PropType } from "vue";
 import { ref } from "vue";
 import { useAssets } from "@/stores/assets";
+import { useRouter } from "vue-router";
 const assetsStore = useAssets();
+const router = useRouter();
 
 const props = defineProps({
   asset: {
