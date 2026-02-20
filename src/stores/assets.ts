@@ -54,5 +54,9 @@ export const useAssets = defineStore("assets", {
       this.loadAssets()
       return newAsset.data
     },
+    async moveAsset(id: number, parentAssetId: number) {
+      await apiClient.patch(`/asset/${id}`, { parentAssetId })
+      await this.loadAssets()
+    },
   }
 });
