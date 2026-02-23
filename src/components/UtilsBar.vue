@@ -1,9 +1,5 @@
 <template>
   <div class="utils-bar">
-    <div class="asset-pagination">
-      <v-pagination v-model="assetsStore.page" :total-visible="0" :length="assetsStore.totalPages"></v-pagination>
-      <v-select class="page-size-picker" variant="outlined" label="page size" :totalVisible="0" v-model="assetsStore.pageSize" :items="[10, 20, 50, 100]"></v-select>
-    </div>
     <div class="asset-actions">
       <v-btn ref="btnCreateFolder" @click="folderDialog = true" :icon="mdiFolderPlus" variant="text" />
       <v-dialog v-model="folderDialog" width="auto">
@@ -36,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { mdiFileUpload, mdiFolderPlus } from "@mdi/js"
 import { useAssets } from "@/stores/assets";
 import axios from "axios";
@@ -61,10 +57,7 @@ async function createFolder() {
   folderName.value = ''
   folderDialog.value = false
 }
-watch([()=>assetsStore.pageSize, ()=> assetsStore.page], () => {
-  assetsStore.loadAssets()
-}
-)
+
 function onFileInputChange(file) {
   if (!file) {
     validInput.value = false
@@ -91,16 +84,8 @@ async function uploadFile() {
 <style scoped>
 .utils-bar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 16px 16px 0 16px
-}
-
-.asset-pagination {
-  display: flex;
-}
-
-.page-size-picker {
-  width: 100px;
 }
 
 .upload_file_dialog {

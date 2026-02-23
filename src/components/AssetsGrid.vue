@@ -14,17 +14,46 @@
     <div class="grid">
       <Asset v-for="asset in assetsStore.assets" :key="asset.id" :asset="asset" />
     </div>
+    <div ref="sentinel" class="sentinel">
+      <v-progress-circular v-if="assetsStore.loading" indeterminate color="primary" size="32" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useAssets } from "@/stores/assets";
-import { onMounted } from "vue";
+import { onMounted, onUnmounted, ref, watch, nextTick } from "vue";
 
 const assetsStore = useAssets();
+const sentinel = ref<HTMLElement | null>(null);
+let observer: IntersectionObserver | null = null;
+
+function isSentinelVisible() {
+  const rect = sentinel.value?.getBoundingClientRect()
+  return rect && rect.top < window.innerHeight + 200
+}
 
 onMounted(() => {
   assetsStore.loadAssets();
+
+  observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && assetsStore.hasMore && !assetsStore.loading) {
+      assetsStore.loadMore()
+    }
+  }, { rootMargin: '200px' })
+
+  if (sentinel.value) observer.observe(sentinel.value)
+});
+
+watch(() => assetsStore.loading, async (isLoading) => {
+  if (!isLoading && assetsStore.hasMore) {
+    await nextTick()
+    if (isSentinelVisible()) assetsStore.loadMore()
+  }
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
 });
 </script>
 
@@ -42,5 +71,12 @@ onMounted(() => {
   padding: 20px;
   gap: 15px;
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+
+.sentinel {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  min-height: 60px;
 }
 </style>

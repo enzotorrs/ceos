@@ -6,14 +6,42 @@ export const useAssets = defineStore("assets", {
   state: () => ({
     assets: [] as Asset[],
     page: 1,
-    pageSize: 10,
-    totalItems: 10,
-    totalPages: 10,
+    pageSize: 30,
+    totalItems: 0,
+    totalPages: 1,
+    loading: false,
     currentFolderId: null as number | null,
     folderPath: [{ id: null as number | null, name: 'Root' }]
   }),
+  getters: {
+    hasMore: (state) => state.page < state.totalPages
+  },
   actions: {
     async loadAssets() {
+      this.page = 1
+      this.loading = true
+      const params: Record<string, unknown> = {
+        page: 1,
+        page_size: this.pageSize
+      }
+
+      if (this.currentFolderId !== null) {
+        params.parentAssetId = this.currentFolderId
+      }
+
+      try {
+        const response = await apiClient.get('/asset', { params })
+        this.assets = response.data.data
+        this.totalItems = response.data.meta.total
+        this.totalPages = response.data.meta.lastPage
+      } finally {
+        this.loading = false
+      }
+    },
+    async loadMore() {
+      if (!this.hasMore || this.loading) return
+      this.page++
+      this.loading = true
       const params: Record<string, unknown> = {
         page: this.page,
         page_size: this.pageSize
@@ -23,21 +51,23 @@ export const useAssets = defineStore("assets", {
         params.parentAssetId = this.currentFolderId
       }
 
-      const response = await apiClient.get('/asset', {params} )
-      this.assets = response.data.data
-      this.totalItems = response.data.meta.total
-      this.totalPages = response.data.meta.lastPage
+      try {
+        const response = await apiClient.get('/asset', { params })
+        this.assets.push(...response.data.data)
+        this.totalItems = response.data.meta.total
+        this.totalPages = response.data.meta.lastPage
+      } finally {
+        this.loading = false
+      }
     },
     async navigateTo(folder: Asset) {
       this.folderPath.push({ id: folder.id, name: folder.name })
       this.currentFolderId = folder.id
-      this.page = 1
       await this.loadAssets()
     },
     async navigateToBreadcrumb(index: number) {
       this.folderPath = this.folderPath.slice(0, index + 1)
       this.currentFolderId = this.folderPath[index].id
-      this.page = 1
       await this.loadAssets()
     },
     async deleteAsset(id: number) {
