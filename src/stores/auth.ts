@@ -56,5 +56,15 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    return { accessToken, refreshToken, login, logout, setTokens, clearTokens, refreshAccessToken }
+    async function signup(username: string, password: string) {
+        const response = await apiClient.post(`${import.meta.env.VITE_API_URL}/auth/signup`, {
+            username,
+            password,
+        })
+        const { accessToken: newAccess, refreshToken: newRefresh } = response.data
+        setTokens(newAccess, newRefresh)
+        router.push('/')
+    }
+
+    return { accessToken, refreshToken, login, signup, logout, setTokens, clearTokens, refreshAccessToken }
 })
