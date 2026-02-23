@@ -5,5 +5,10 @@
 </template>
 
 <script lang="ts" setup>
-  //
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+if (authStore.accessToken) {
+  authStore.fetchMe().catch(() => {})
+}
 </script>

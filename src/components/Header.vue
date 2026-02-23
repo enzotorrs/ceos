@@ -4,20 +4,30 @@
       <Logo/>
     </div>
     <div class="header__icons">
-      <v-icon
-        :icon="mdiBell"
-        color="white"
+      <v-icon :icon="mdiBell" color="white" />
+
+      <input
+        ref="avatarInput"
+        type="file"
+        accept="image/*"
+        style="display: none"
+        @change="onAvatarSelected"
       />
+
       <v-menu location="bottom end">
         <template #activator="{ props }">
-          <img
-            class="user-icon"
-            src="@/assets/gojo_icon.png"
-            alt="User perfil icon"
-            v-bind="props"
-          >
+          <v-avatar class="user-avatar" size="40" v-bind="props">
+            <v-img v-if="authStore.me?.avatarUrl" :src="authStore.me.avatarUrl" />
+            <v-icon v-else :icon="mdiAccount" size="28" color="white" />
+          </v-avatar>
         </template>
         <v-list>
+          <v-list-item
+            :prepend-icon="mdiImageEdit"
+            title="Upload avatar"
+            :disabled="avatarUploading"
+            @click="avatarInput!.click()"
+          />
           <v-list-item
             :prepend-icon="mdiLogout"
             title="Logout"
@@ -29,11 +39,26 @@
   </header>
 </template>
 
-<script  lang="ts" setup>
-import { mdiBell, mdiLogout } from "@mdi/js";
-import { useAuthStore } from "@/stores/auth";
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { mdiBell, mdiLogout, mdiAccount, mdiImageEdit } from '@mdi/js'
+import { useAuthStore } from '@/stores/auth'
 
-const authStore = useAuthStore();
+const authStore = useAuthStore()
+const avatarInput = ref<HTMLInputElement | null>(null)
+const avatarUploading = ref(false)
+
+async function onAvatarSelected(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  avatarUploading.value = true
+  try {
+    await authStore.uploadAvatar(file)
+  } finally {
+    avatarUploading.value = false
+    if (avatarInput.value) avatarInput.value.value = ''
+  }
+}
 </script>
 
 <style scoped>
@@ -60,10 +85,8 @@ header {
   gap: 24px;
 }
 
-.user-icon {
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
+.user-avatar {
   cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.15);
 }
 </style>

@@ -3,9 +3,15 @@ import { ref } from 'vue'
 import router from '@/router'
 import { apiClient } from '@/services/apiClient'
 
+interface Me {
+    username: string
+    avatarUrl: string | null
+}
+
 export const useAuthStore = defineStore('auth', () => {
     const accessToken = ref(localStorage.getItem('accessToken') || '')
     const refreshToken = ref(localStorage.getItem('refreshToken') || '')
+    const me = ref<Me | null>(null)
 
     async function login(username: string, password: string) {
         const response = await apiClient.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
@@ -14,6 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
         })
         const { accessToken: newAccess, refreshToken: newRefresh } = response.data
         setTokens(newAccess, newRefresh)
+        await fetchMe()
         router.push('/')
     }
 
@@ -27,6 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
     function clearTokens() {
         accessToken.value = ''
         refreshToken.value = ''
+        me.value = null
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
     }
@@ -63,8 +71,24 @@ export const useAuthStore = defineStore('auth', () => {
         })
         const { accessToken: newAccess, refreshToken: newRefresh } = response.data
         setTokens(newAccess, newRefresh)
+        await fetchMe()
         router.push('/')
     }
 
-    return { accessToken, refreshToken, login, signup, logout, setTokens, clearTokens, refreshAccessToken }
+    async function fetchMe() {
+        const response = await apiClient.get(`${import.meta.env.VITE_API_URL}/auth/user/me`)
+        me.value = response.data.data
+    }
+
+    async function uploadAvatar(file: File) {
+        const { data } = await apiClient.post(`${import.meta.env.VITE_API_URL}/auth/user/me/avatar`)
+        await fetch(data.data.uploadUrl, {
+            method: 'PUT',
+            body: file,
+            headers: { 'Content-Type': file.type },
+        })
+        await fetchMe()
+    }
+
+    return { accessToken, refreshToken, me, login, signup, logout, setTokens, clearTokens, refreshAccessToken, fetchMe, uploadAvatar }
 })
