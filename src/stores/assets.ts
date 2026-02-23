@@ -87,5 +87,8 @@ export const useAssets = defineStore("assets", {
       await apiClient.patch(`/asset/${id}`, { parentAssetId })
       await this.loadAssets()
     },
+    async patchAssetStatus(id: number, status: 'uploading' | 'success') {
+      await apiClient.patch(`/asset/${id}`, { status })
+    },
   }
 });

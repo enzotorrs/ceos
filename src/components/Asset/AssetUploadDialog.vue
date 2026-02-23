@@ -54,6 +54,8 @@ async function uploadFile() {
   const asset = { name: assetName.value.trim() || file.name.replace(/\.[^.]+$/, ''), folder: false, filename: file.name, parentAssetId: assetsStore.currentFolderId }
   const newAsset = await assetsStore.createAsset(asset)
 
+  await assetsStore.loadAssets()
+
   uploading.value = true
   uploadProgress.value = 0
   try {
@@ -63,12 +65,13 @@ async function uploadFile() {
         uploadProgress.value = e.total ? Math.round((e.loaded * 100) / e.total) : 0
       },
     })
+    await assetsStore.patchAssetStatus(newAsset.data.id, 'success')
   } finally {
     uploading.value = false
     uploadProgress.value = 0
+    await assetsStore.loadAssets()
   }
 
-  await assetsStore.loadAssets()
 
   emit('update:modelValue', false)
   selectedFile.value = null

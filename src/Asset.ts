@@ -12,6 +12,7 @@ export interface Asset {
   id: number
   userId: number
   user?: AssetUser
+  status: 'uploading' | 'success' | null
   childAssets: Asset[]
   createdAt: string
   updatedAt: string

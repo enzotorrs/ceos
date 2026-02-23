@@ -1,7 +1,7 @@
 <template>
     <div
       class="asset"
-      :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled, clickable: true, 'drop-target': dropTarget }"
+      :class="{ folder: asset.folder, file: !asset.folder, disabled: disabled, clickable: true, 'drop-target': dropTarget, uploading: asset.status === 'uploading' }"
       draggable="true"
       @mouseover="hover = true"
       @mouseleave="hover = false"
@@ -12,6 +12,10 @@
       @dragleave="dropTarget = false"
       @drop.prevent="onDrop"
     >
+      <div v-if="asset.status === 'uploading'" class="uploading-label">
+        Uploading<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+      </div>
+
       <div class="asset__footer">
         <div class="asset__metadata_wrapper">
           <p class="asset__name">
@@ -120,6 +124,71 @@ assetsStore.$onAction(({
   flex-direction: column;
   justify-content: end;
   transition: visibility 1s linear, opacity 0.3s linear;
+  overflow: hidden;
+}
+
+/* Uploading state */
+.uploading {
+  outline: 1px solid rgba(255, 150, 30, 0.5);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.uploading .asset__footer {
+  opacity: 0.5;
+}
+
+/* Shimmer sweep overlay */
+.uploading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Uploading label */
+.uploading-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgb(255, 160, 50);
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  z-index: 1;
+}
+
+/* Animated dots */
+.dots span {
+  animation: blink 1.2s infinite step-start;
+}
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 140, 20, 0.3); }
+  50%       { box-shadow: 0 0 10px 3px rgba(255, 140, 20, 0.15); }
 }
 
 .asset__footer {
@@ -133,7 +202,6 @@ assetsStore.$onAction(({
   flex-direction: column;
   width: 90%;
   overflow-x: hidden;
-
 }
 
 .asset__name {
