@@ -81,7 +81,6 @@ export const useAssets = defineStore("assets", {
     },
     async createAsset(asset: Asset) {
       const newAsset = await apiClient.post('/asset', asset)
-      this.loadAssets()
       return newAsset.data
     },
     async moveAsset(id: number, parentAssetId: number) {
