@@ -23,6 +23,7 @@
 import { ref } from 'vue'
 import { mdiPaperclip } from '@mdi/js'
 import { useAssets } from '@/stores/assets'
+import { apiClient } from '@/services/apiClient'
 import axios from 'axios'
 
 defineProps<{ modelValue: boolean }>()
@@ -35,6 +36,8 @@ const validInput = ref(false)
 const assetName = ref('')
 const uploading = ref(false)
 const uploadProgress = ref(0)
+
+const PART_SIZE = 5 * 1024 * 1024
 
 function onFileSelected(event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0] ?? null
@@ -58,20 +61,45 @@ async function uploadFile() {
 
   uploading.value = true
   uploadProgress.value = 0
+
+  const { id, uploadId, key } = newAsset.data
+  const totalParts = Math.ceil(file.size / PART_SIZE)
+  const parts: { PartNumber: number; ETag: string }[] = []
+
   try {
-    await axios.put(newAsset.data.uploadUrl, file, {
-      headers: { 'Content-Type': file.type },
-      onUploadProgress(e) {
-        uploadProgress.value = e.total ? Math.round((e.loaded * 100) / e.total) : 0
-      },
-    })
-    await assetsStore.patchAssetStatus(newAsset.data.id, 'success')
+    for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
+      const start = (partNumber - 1) * PART_SIZE
+      const end = Math.min(start + PART_SIZE, file.size)
+      const chunk = file.slice(start, end)
+
+      const { data } = await apiClient.get('/media/multipart/presign', {
+        params: { key, uploadId, partNumber },
+      })
+      const url = data.data.url
+
+      const response = await axios.put(url, chunk, {
+        headers: { 'Content-Type': 'application/octet-stream' },
+        onUploadProgress(e) {
+          const partProgress = e.total ? e.loaded / e.total : 0
+          uploadProgress.value = Math.round(((partNumber - 1 + partProgress) / totalParts) * 100)
+        },
+      })
+
+      const etag = response.headers['etag']
+      parts.push({ PartNumber: partNumber, ETag: etag })
+      uploadProgress.value = Math.round((partNumber / totalParts) * 100)
+    }
+
+    await apiClient.post('/media/multipart/complete', { key, uploadId, parts })
+    await assetsStore.patchAssetStatus(id, 'success')
+  } catch (error) {
+    await apiClient.post('/media/multipart/abort', { key, uploadId }).catch(() => {})
+    throw error
   } finally {
     uploading.value = false
     uploadProgress.value = 0
     await assetsStore.loadAssets()
   }
-
 
   emit('update:modelValue', false)
   selectedFile.value = null
