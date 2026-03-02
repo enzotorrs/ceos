@@ -4,6 +4,15 @@ export interface AssetUser {
   avatarFilename: string | null
 }
 
+export interface Comment {
+  id: number
+  content: string
+  assetId: number
+  userId: number
+  user: AssetUser
+  createdAt: string
+}
+
 export interface Asset {
   name: string
   filename: string

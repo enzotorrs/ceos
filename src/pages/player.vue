@@ -40,6 +40,12 @@
 
           <v-divider class="my-4" />
 
+          <CommentsSection
+            v-if="asset"
+            :asset-id="asset.id"
+            :asset-owner-username="asset.user?.username ?? ''"
+          />
+
         </div>
       </div>
     </div>
@@ -52,6 +58,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { mdiArrowLeft, mdiAccount } from '@mdi/js'
 import { apiClient } from '@/services/apiClient'
 import type { Asset } from '@/Asset'
+import CommentsSection from '@/components/CommentsSection.vue'
 
 const route = useRoute()
 const router = useRouter()

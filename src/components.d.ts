@@ -20,6 +20,7 @@ declare module 'vue' {
     AssetsGrid: typeof import('./components/AssetsGrid.vue')['default']
     AssetToolButton: typeof import('./components/Asset/AssetToolButton.vue')['default']
     AssetUploadDialog: typeof import('./components/Asset/AssetUploadDialog.vue')['default']
+    CommentsSection: typeof import('./components/CommentsSection.vue')['default']
     Header: typeof import('./components/Header.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Logo: typeof import('./components/Logo.vue')['default']
