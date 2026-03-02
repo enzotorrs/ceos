@@ -25,10 +25,13 @@ import { ref } from 'vue'
 import { mdiPaperclip } from '@mdi/js'
 import { useAssets } from '@/stores/assets'
 import { uploadAsset } from '@/services/uploadService'
+import {useToastStore} from '@/stores/toast'
+
 
 defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
 
+const toast = useToastStore()
 const assetsStore = useAssets()
 const hiddenFileInput = ref<HTMLInputElement | null>(null)
 const selectedFile = ref<File | null>(null)
@@ -52,14 +55,17 @@ function onFileSelected(event: Event) {
   assetName.value = file.name.replace(/\.[^.]+$/, '')
 }
 
-function isValidInput(file: any){
-  if(file.size <= 0){
+function isValidInput(file: File) {
+  if (file.size <= 0) {
+    toast.error('File size must be greater than zero')
     return false
   }
-  if(file.size > 5368709120){
+  if (file.size > 5368709120) {
+    toast.error('File size must not exceed 5 GB')
     return false
   }
-  if(file.type !== 'video/mp4'){
+  if (file.type !== 'video/mp4') {
+    toast.error('File must be an MP4')
     return false
   }
   return true
